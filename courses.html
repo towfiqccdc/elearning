@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Courses — CCDC HSE Learning Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div data-navbar="courses"></div>
+
+  <section class="section" style="padding-top: 44px;">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>All Courses</h2>
+          <p id="result-count">Loading...</p>
+        </div>
+        <form class="search-bar" style="max-width: 340px; margin-top:0; box-shadow: none; border: 1.5px solid var(--border);" onsubmit="event.preventDefault();">
+          <input type="text" id="search-input" placeholder="Search courses...">
+          <button type="submit"><i class="bi bi-search"></i></button>
+        </form>
+      </div>
+
+      <div class="category-row" id="category-chips"></div>
+      <div class="course-grid" id="course-grid"></div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (async () => {
+      await coursesReady;
+
+      const allCourses = getAllCourses();
+      const params = new URLSearchParams(window.location.search);
+      let currentQuery = params.get('q') || '';
+      let currentCat = 'all';
+
+      const searchInput = document.getElementById('search-input');
+      searchInput.value = currentQuery;
+
+      function applyFilters() {
+        let list = allCourses;
+        if (currentCat !== 'all') {
+          list = list.filter(c => c.category === currentCat);
+        }
+        const q = currentQuery.trim().toLowerCase();
+        if (q) {
+          list = list.filter(c =>
+            c.title.toLowerCase().includes(q) ||
+            c.summary.toLowerCase().includes(q) ||
+            c.category.toLowerCase().includes(q)
+          );
+        }
+        renderCourseGrid('course-grid', list);
+        document.getElementById('result-count').textContent =
+          `${list.length} course${list.length === 1 ? '' : 's'}${currentQuery ? ` matching "${currentQuery}"` : ''}`;
+      }
+
+      // Category chips
+      const cats = getAllCategories();
+      document.getElementById('category-chips').innerHTML = `
+        <div class="chip active" data-cat="all">All Topics</div>
+        ${cats.map(c => `<div class="chip" data-cat="${c}">${c}</div>`).join('')}
+      `;
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentCat = chip.dataset.cat;
+          applyFilters();
+        });
+      });
+
+      searchInput.addEventListener('input', () => {
+        currentQuery = searchInput.value;
+        applyFilters();
+      });
+
+      applyFilters();
+    })();
+  </script>
+</body>
+</html>
