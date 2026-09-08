@@ -12,7 +12,7 @@ registerCourse({
     title: "Hydrogen Sulfide H2S Training",
     category: "H2S",
     level: "Intermediate",
-    icon: "bi-exclamation-triangle",
+    icon: "bi-cloud-haze2",
     summary: "Recognize H₂S hazards, understand exposure risks, and respond safely to an H₂S emergency.",
     description: "This course provides essential knowledge about Hydrogen Sulfide (H₂S), including its properties, health hazards, detection, alarm response, personal protective equipment, emergency procedures, and safe work practices in areas where H₂S may be present.",
     instructor: "CCDC HSE Department",
