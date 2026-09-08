@@ -65,7 +65,8 @@ const COURSE_FILES = [
   "fire-extinguisher-training",
   "h2s-safety",
   "induction",
-  "hira"
+  "hira",
+  "forklift"
 ];
 
 // ---- Loading machinery — no need to edit below this line ----
