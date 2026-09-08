@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title id="page-title">Course — CCDC HSE Learning Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div data-navbar="courses"></div>
+
+  <!-- Course hero (overview mode only) -->
+  <section class="course-hero" id="course-hero-section">
+    <div class="container">
+      <div class="breadcrumb"><a href="courses.html">Courses</a> / <span id="crumb-title"></span></div>
+      <div class="course-hero-grid">
+        <div>
+          <div class="cat-badge" id="hero-cat"></div>
+          <h1 id="hero-title"></h1>
+          <p class="summary" id="hero-summary"></p>
+          <div class="meta-list">
+            <span><i class="bi bi-bar-chart"></i> <span id="hero-level"></span></span>
+            <span><i class="bi bi-clock"></i> <span id="hero-duration"></span></span>
+            <span><i class="bi bi-collection-play"></i> <span id="hero-lessons"></span> lessons</span>
+            <span><i class="bi bi-person"></i> <span id="hero-instructor"></span></span>
+          </div>
+        </div>
+        <div class="enroll-card">
+          <div class="video-frame" id="enroll-video-frame">
+            <i class="bi bi-play-circle"></i>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="enroll-progress-fill"></div></div>
+          <div class="progress-label">
+            <span id="enroll-progress-text">0 / 0 lessons</span>
+            <span id="enroll-progress-pct">0%</span>
+          </div>
+          <button class="btn btn-primary" id="enroll-start-btn"><i class="bi bi-play-fill"></i> Start Course</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Body: curriculum sidebar + content -->
+  <section class="container course-body">
+    <div class="curriculum-panel">
+      <div class="panel-head">Curriculum</div>
+      <div id="curriculum-list"></div>
+    </div>
+
+    <div id="content-pane">
+      <!-- Overview mode content -->
+      <div class="lesson-content-card" id="overview-pane">
+        <div class="lesson-kicker">About this course</div>
+        <h2>Description</h2>
+        <div class="lesson-body-text" id="overview-description"></div>
+      </div>
+
+      <!-- Lesson mode content -->
+      <div class="lesson-content-card" id="lesson-pane" style="display:none;">
+        <div class="lesson-kicker" id="lesson-module-label"></div>
+        <h2 id="lesson-title"></h2>
+
+        <div id="lesson-media-area"></div>
+
+        <div class="lesson-body-text" id="lesson-content-body"></div>
+
+        <div class="lesson-footer-nav">
+          <a href="#" class="nav-btn" id="lesson-prev-btn"><i class="bi bi-arrow-left"></i> <span></span></a>
+          <button class="mark-complete-btn" id="lesson-complete-btn"></button>
+          <a href="#" class="nav-btn" id="lesson-next-btn" style="justify-content: flex-end;"><span></span> <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (async () => {
+    await coursesReady;
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('c');
+    const activeLessonId = params.get('lesson');
+    const course = getCourseBySlug(slug);
+    let activePdfKeyHandler = null; // tracks the PDF viewer's keydown listener so it can be cleaned up between lessons
+    let activeFullscreenChangeHandler = null; // same idea, for the fullscreenchange listener
+    let pdfjsLibPromise = null; // caches the dynamically-imported PDF.js module
+
+    if (!course) {
+      document.querySelector('.container.course-body').innerHTML =
+        '<p style="padding: 40px 0;">Course not found. <a href="courses.html">Back to all courses</a>.</p>';
+      document.getElementById('course-hero-section').style.display = 'none';
+    } else {
+      initCoursePage();
+    }
+
+    function flatLessons() {
+      const flat = [];
+      course.modules.forEach(m => m.lessons.forEach(l => {
+        flat.push({ id: lessonId(course, m, l), module: m, lesson: l });
+      }));
+      return flat;
+    }
+
+    function initCoursePage() {
+      document.title = `${course.title} — CCDC HSE Learning Portal`;
+      document.getElementById('crumb-title').textContent = course.title;
+      document.getElementById('hero-cat').textContent = course.category;
+      document.getElementById('hero-title').textContent = course.title;
+      document.getElementById('hero-summary').textContent = course.summary;
+      document.getElementById('hero-level').textContent = course.level;
+      document.getElementById('hero-duration').textContent = course.duration;
+      document.getElementById('hero-lessons').textContent = countLessons(course);
+      document.getElementById('hero-instructor').textContent = course.instructor;
+      document.getElementById('overview-description').innerHTML = `<p>${course.description}</p>`;
+
+      renderCurriculum();
+      renderProgressWidget();
+
+      const flat = flatLessons();
+      document.getElementById('enroll-start-btn').addEventListener('click', () => {
+        const first = flat[0];
+        goToLesson(first.id);
+      });
+
+      if (activeLessonId) {
+        showLessonMode(activeLessonId);
+      } else {
+        showOverviewMode();
+      }
+    }
+
+    function renderCurriculum() {
+      const p = getProgress()[course.slug] || {};
+      const html = course.modules.map(m => `
+        <div class="module-block">
+          <div class="module-title">${m.title}</div>
+          ${m.lessons.map(l => {
+            const id = lessonId(course, m, l);
+            const done = !!p[id];
+            const active = id === activeLessonId;
+            const typeIcon = l.type === 'video' ? 'bi-play-circle' : l.type === 'slides' ? 'bi-easel2' : l.type === 'document' ? 'bi-file-earmark-pdf' : 'bi-file-text';;
+            return `
+              <div class="lesson-row ${active ? 'active' : ''}" data-lesson-id="${id}">
+                <span class="lesson-check ${done ? 'done' : ''}">${done ? '<i class="bi bi-check"></i>' : ''}</span>
+                <i class="bi ${typeIcon} lesson-type-icon"></i>
+                <span class="lesson-name">${l.title}</span>
+                <span class="lesson-dur">${l.duration}</span>
+              </div>`;
+          }).join('')}
+        </div>
+      `).join('');
+      document.getElementById('curriculum-list').innerHTML = html;
+
+      document.querySelectorAll('.lesson-row').forEach(row => {
+        row.addEventListener('click', () => goToLesson(row.dataset.lessonId));
+      });
+    }
+
+    function renderProgressWidget() {
+      const prog = courseProgress(course);
+      document.getElementById('enroll-progress-fill').style.width = prog.pct + '%';
+      document.getElementById('enroll-progress-fill').classList.toggle('complete', prog.pct === 100);
+      document.getElementById('enroll-progress-text').textContent = `${prog.done} / ${prog.total} lessons`;
+      document.getElementById('enroll-progress-pct').textContent = prog.pct + '%';
+      document.getElementById('enroll-start-btn').innerHTML = prog.done > 0
+        ? '<i class="bi bi-play-fill"></i> Continue Course'
+        : '<i class="bi bi-play-fill"></i> Start Course';
+    }
+
+    // Accepts any common YouTube link format (watch, share, embed) and
+    // returns the correct embed URL. Non-YouTube links pass through unchanged.
+    function toEmbeddableVideoUrl(url) {
+      const watchMatch = url.match(/[?&]v=([^&]+)/);       // youtube.com/watch?v=ID
+      if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+
+      const shortMatch = url.match(/youtu\.be\/([^?&]+)/); // youtu.be/ID
+      if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+
+      return url; // already an embed URL, a Vimeo link, or a direct file
+    }
+
+    function renderMediaArea(lesson) {
+      if (lesson.type === 'video') {
+        if (lesson.video) {
+          const isDirectFile = /\.(mp4|webm|ogg)$/i.test(lesson.video.trim());
+          const embedUrl = toEmbeddableVideoUrl(lesson.video.trim());
+          return `<div class="lesson-video-placeholder">${
+            isDirectFile
+              ? `<video src="${embedUrl}" controls></video>`
+              : `<iframe src="${embedUrl}" allowfullscreen></iframe>`
+          }</div>`;
+        }
+        return `<div class="lesson-video-placeholder"><i class="bi bi-camera-video"></i><span>Video coming soon for this lesson</span></div>`;
+      }
+
+      if (lesson.type === 'slides') {
+        // Preferred: a PDF (exported from PPT) rendered as an in-page slideshow — no download link shown.
+        if (lesson.slidesPdf) {
+          return renderPdfViewerSkeleton(lesson.slidesPdf);
+        }
+        if (lesson.slides) {
+          // Online embeddable slides (Google Slides / PowerPoint Online embed link)
+          return `<div class="lesson-video-placeholder"><iframe src="${lesson.slides}" allowfullscreen></iframe></div>`;
+        }
+        if (lesson.slidesFile) {
+          // Fallback only — this gives a downloadable file, not a view-only slideshow.
+          const filename = lesson.slidesFile.split('/').pop();
+          return `
+            <div class="lesson-slides-download">
+              <div class="slide-icon"><i class="bi bi-file-earmark-slides"></i></div>
+              <div class="slide-info">
+                <strong>${filename}</strong>
+                <span>Slide deck for this lesson (downloadable — save as PDF and use slidesPdf for a view-only slideshow instead)</span>
+              </div>
+              <a class="btn btn-primary" href="${lesson.slidesFile}" download>
+                <i class="bi bi-download"></i> Download
+              </a>
+            </div>`;
+        }
+        return `<div class="lesson-video-placeholder"><i class="bi bi-easel2"></i><span>Slides coming soon for this lesson</span></div>`;
+      }
+
+      if (lesson.type === 'document') {
+        if (lesson.pdfDoc) {
+          return `<div class="pdf-document-embed">
+              <iframe src="${lesson.pdfDoc}"></iframe>
+            </div>`;
+        }
+  return `<div class="lesson-video-placeholder"><i class="bi bi-file-earmark-pdf"></i><span>Document coming soon for this lesson</span></div>`;
+      }
+
+      // type === 'reading' — no media area at all
+      return '';
+    }
+
+    /* ===================== PDF slideshow viewer (PDF.js, bundled locally) ===================== */
+
+    function loadPdfjs() {
+      if (!pdfjsLibPromise) {
+        pdfjsLibPromise = import('./vendor/pdfjs/pdf.min.mjs').then(lib => {
+          lib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.mjs';
+          return lib;
+        });
+      }
+      return pdfjsLibPromise;
+    }
+
+    function renderPdfViewerSkeleton(pdfUrl) {
+      const uid = 'pdfv_' + Math.random().toString(36).slice(2, 9);
+      return `
+        <div class="pdf-viewer" id="${uid}" data-pdf-url="${pdfUrl}">
+          <div class="pdf-viewer-inner">
+            <div class="pdf-stage">
+              <button class="pdf-nav-btn pdf-nav-prev" disabled aria-label="Previous slide"><i class="bi bi-chevron-left"></i></button>
+              <div class="pdf-loading"><i class="bi bi-arrow-repeat"></i> Loading slides…</div>
+              <button class="pdf-nav-btn pdf-nav-next" disabled aria-label="Next slide"><i class="bi bi-chevron-right"></i></button>
+              <button class="pdf-fullscreen-btn" aria-label="Toggle fullscreen"><i class="bi bi-arrows-fullscreen"></i></button>
+            </div>
+            <div class="pdf-bottom-bar">
+              <div class="pdf-meta-row">
+                <span class="pdf-counter">Loading…</span>
+                <span class="pdf-hint">Use ← → to navigate</span>
+              </div>
+            
+            </div>
+          </div>
+        </div>`;
+    }
+
+    async function wireUpPdfViewer(container) {
+      if (activePdfKeyHandler) {
+        document.removeEventListener('keydown', activePdfKeyHandler);
+        activePdfKeyHandler = null;
+      }
+      if (activeFullscreenChangeHandler) {
+        document.removeEventListener('fullscreenchange', activeFullscreenChangeHandler);
+        activeFullscreenChangeHandler = null;
+      }
+      const viewer = container.querySelector('.pdf-viewer');
+      if (!viewer) return;
+
+      const pdfUrl = viewer.dataset.pdfUrl;
+      const stage = viewer.querySelector('.pdf-stage');
+      const loadingEl = viewer.querySelector('.pdf-loading');
+      const prevBtn = viewer.querySelector('.pdf-nav-prev');
+      const nextBtn = viewer.querySelector('.pdf-nav-next');
+      const counterEl = viewer.querySelector('.pdf-counter');
+      const thumbStrip = viewer.querySelector('.pdf-thumb-strip');
+      const fullscreenBtn = viewer.querySelector('.pdf-fullscreen-btn');
+
+      let pdfjsLib, pdfDoc;
+      try {
+        pdfjsLib = await loadPdfjs();
+        pdfDoc = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
+      } catch (err) {
+        console.error('PDF slideshow failed to load:', pdfUrl, err);
+        loadingEl.innerHTML = `<i class="bi bi-exclamation-triangle"></i> Couldn't load slides (${pdfUrl})`;
+        return;
+      }
+
+      const numPages = pdfDoc.numPages;
+      let current = 1;
+
+      // Set up canvas once, in place of the loading indicator
+      const canvas = document.createElement('canvas');
+      canvas.className = 'pdf-page-canvas';
+      stage.replaceChild(canvas, loadingEl);
+
+      // --- Sizing strategy ---
+      // All slide PDFs are standard 16:9 PPT exports, and .pdf-stage is
+      // already fixed to aspect-ratio: 16/9 in CSS. So we skip any per-page
+      // aspect-ratio math entirely: the canvas is just told to fill the
+      // stage completely (width/height: 100%), and we render its bitmap at
+      // whatever resolution matches the stage's current on-screen size
+      // (times devicePixelRatio, for sharpness).
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.display = 'block';
+
+      async function renderPage(pageNum) {
+        const page = await pdfDoc.getPage(pageNum);
+
+        const rect = stage.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+
+        const unscaled = page.getViewport({ scale: 1 });
+        const scale = (rect.width / unscaled.width) * dpr;
+
+        const viewport = page.getViewport({ scale });
+
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+      }
+
+      function updateControls() {
+        counterEl.textContent = `Slide ${current} / ${numPages}`;
+        prevBtn.disabled = current === 1;
+        nextBtn.disabled = current === numPages;
+        thumbStrip.querySelectorAll('.pdf-thumb').forEach(t => {
+          t.classList.toggle('active', parseInt(t.dataset.page, 10) === current);
+        });
+      }
+
+      async function goTo(pageNum) {
+        current = Math.max(1, Math.min(numPages, pageNum));
+        await renderPage(current);
+        updateControls();
+      }
+
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+
+      const keyHandler = (e) => {
+        if (e.key === 'ArrowLeft') goTo(current - 1);
+        if (e.key === 'ArrowRight') goTo(current + 1);
+      };
+      activePdfKeyHandler = keyHandler;
+      document.addEventListener('keydown', keyHandler);
+
+      // --- Fullscreen toggle ---
+      // Native Fullscreen API: only the button click triggers it (browsers
+      // require an explicit user gesture); the browser's own Escape-key
+      // handling exits fullscreen automatically, which the fullscreenchange
+      // listener below picks up to swap the icon back and re-render the
+      // current page sharp at the new (smaller) size.
+      fullscreenBtn.addEventListener('click', () => {
+        if (document.fullscreenElement === viewer) {
+          document.exitFullscreen();
+        } else {
+          viewer.requestFullscreen();
+        }
+      });
+
+      const fullscreenChangeHandler = () => {
+        const isFullscreen = document.fullscreenElement === viewer;
+        fullscreenBtn.innerHTML = isFullscreen
+          ? '<i class="bi bi-fullscreen-exit"></i>'
+          : '<i class="bi bi-arrows-fullscreen"></i>';
+        // Container size just changed — redraw the current page so it's
+        // sharp at the new size rather than a blown-up/shrunk old bitmap.
+        renderPage(current);
+      };
+      activeFullscreenChangeHandler = fullscreenChangeHandler;
+      document.addEventListener('fullscreenchange', fullscreenChangeHandler);
+
+      // Render first page immediately
+      await goTo(1);
+
+      // Build thumbnail strip buttons (placeholders), fill images lazily after
+      thumbStrip.innerHTML = Array.from({ length: numPages }, (_, i) => `
+        <button class="pdf-thumb ${i === 0 ? 'active' : ''}" data-page="${i + 1}" aria-label="Go to slide ${i + 1}"></button>
+      `).join('');
+      thumbStrip.querySelectorAll('.pdf-thumb').forEach(btn => {
+        btn.addEventListener('click', () => goTo(parseInt(btn.dataset.page, 10)));
+      });
+
+      // Lazily render low-res thumbnails one at a time so the UI stays responsive
+      for (let i = 1; i <= numPages; i++) {
+        const page = await pdfDoc.getPage(i);
+        const unscaled = page.getViewport({ scale: 1 });
+        const thumbScale = 140 / unscaled.width;
+        const viewport = page.getViewport({ scale: thumbScale });
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = viewport.width;
+        offCanvas.height = viewport.height;
+        await page.render({ canvasContext: offCanvas.getContext('2d'), viewport }).promise;
+        const img = document.createElement('img');
+        img.src = offCanvas.toDataURL('image/png');
+        const btn = thumbStrip.querySelector(`.pdf-thumb[data-page="${i}"]`);
+        if (btn) btn.appendChild(img);
+        await new Promise(r => setTimeout(r, 0)); // yield to keep UI responsive
+      }
+    }
+
+    function goToLesson(id) {
+      const url = new URL(window.location);
+      url.searchParams.set('lesson', id);
+      window.history.pushState({}, '', url);
+      showLessonMode(id);
+    }
+
+    function showOverviewMode() {
+      document.getElementById('course-hero-section').style.display = '';
+      document.getElementById('overview-pane').style.display = '';
+      document.getElementById('lesson-pane').style.display = 'none';
+    }
+
+    function showLessonMode(id) {
+      const flat = flatLessons();
+      const idx = flat.findIndex(f => f.id === id);
+      if (idx === -1) { showOverviewMode(); return; }
+      const { module, lesson } = flat[idx];
+
+      document.getElementById('course-hero-section').style.display = 'none';
+      document.getElementById('overview-pane').style.display = 'none';
+      document.getElementById('lesson-pane').style.display = '';
+
+      document.getElementById('lesson-module-label').textContent = module.title;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-content-body').innerHTML = lesson.content;
+
+      document.getElementById('lesson-media-area').innerHTML = renderMediaArea(lesson);
+      wireUpPdfViewer(document.getElementById('lesson-media-area'));
+
+      // Mark complete button
+      const done = isLessonDone(course.slug, id);
+      const completeBtn = document.getElementById('lesson-complete-btn');
+      function paintCompleteBtn(isDone) {
+        completeBtn.classList.toggle('done', isDone);
+        completeBtn.innerHTML = isDone
+          ? '<i class="bi bi-check-circle-fill"></i> Completed'
+          : '<i class="bi bi-check-lg"></i> Mark as Complete';
+      }
+      paintCompleteBtn(done);
+      completeBtn.onclick = () => {
+        const nowDone = toggleLessonDone(course.slug, id);
+        paintCompleteBtn(nowDone);
+        renderCurriculum();
+        renderProgressWidget();
+        rebindLessonRowActive(id);
+      };
+
+      // Prev/next
+      const prev = flat[idx - 1];
+      const next = flat[idx + 1];
+      const prevBtn = document.getElementById('lesson-prev-btn');
+      const nextBtn = document.getElementById('lesson-next-btn');
+      if (prev) {
+        prevBtn.style.visibility = 'visible';
+        prevBtn.querySelector('span').textContent = prev.lesson.title;
+        prevBtn.onclick = (e) => { e.preventDefault(); goToLesson(prev.id); };
+      } else {
+        prevBtn.style.visibility = 'hidden';
+      }
+      if (next) {
+        nextBtn.style.visibility = 'visible';
+        nextBtn.querySelector('span').textContent = next.lesson.title;
+        nextBtn.onclick = (e) => { e.preventDefault(); goToLesson(next.id); };
+      } else {
+        nextBtn.querySelector('span').textContent = 'Back to overview';
+        nextBtn.onclick = (e) => {
+          e.preventDefault();
+          const url = new URL(window.location);
+          url.searchParams.delete('lesson');
+          window.history.pushState({}, '', url);
+          showOverviewMode();
+        };
+      }
+
+      rebindLessonRowActive(id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function rebindLessonRowActive(id) {
+      document.querySelectorAll('.lesson-row').forEach(row => {
+        row.classList.toggle('active', row.dataset.lessonId === id);
+      });
+    }
+
+    })();
+  </script>
+</body>
+</html>
