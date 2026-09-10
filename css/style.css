@@ -481,15 +481,19 @@ img { max-width: 100%; display: block; }
 
 /* ================= COURSE BODY (curriculum + lesson) ================= */
 .course-body {
-  
+  display: grid;
   grid-template-columns: 320px 1fr;
   gap: 36px;
   padding: 44px 0 80px;
   align-items: start;
 }
-/* The curriculum + lesson content only appear once a lesson is opened —
-   the course landing page (hero + description) needs no scrolling. */
-body.lesson-active .course-body { display: grid; }
+
+/* Desktop/tablet only: curriculum + lesson content stay hidden until a
+   lesson is opened. Mobile keeps showing the course list, unchanged. */
+@media (min-width: 641px) {
+  .course-body { display: none; }
+  body.lesson-active .course-body { display: grid; }
+}
 
 .course-hero .hero-description { margin-top: 24px; max-width: 640px; }
 .course-hero .hero-description-kicker {
