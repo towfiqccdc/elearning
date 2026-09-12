@@ -13,6 +13,7 @@ registerCourse({
     category: "Vehicle",
     level: "Intermediate",
     icon: "bi-truck",
+    locked:true,
     summary: "Learn the essential safety practices for operating forklifts safely, including hazard identification, pre-use inspections, load handling, and safe driving techniques.",
     description: "This course provides essential knowledge and practical safety requirements for safe forklift operation. Employees will learn how to identify common forklift hazards, conduct pre-use inspections, understand forklift stability and load capacity, safely pick up and transport loads, maintain proper visibility, follow site traffic rules, and operate safely around pedestrians. The course also covers safe parking, battery and fuel safety, prohibited practices, emergency response, and the responsibilities of forklift operators.",
     instructor: "CCDC HSE Department",
