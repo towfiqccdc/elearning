@@ -13,6 +13,7 @@ registerCourse({
     category: "High-Risk Work",
     level: "Intermediate",
     icon: "bi-fire",
+    locked:true,
     summary: "How to identify fire classes, choose the right extinguisher, and respond safely to a small fire.",
     description: "Fires on site are rare but fast-moving, and using the wrong extinguisher — or hesitating — can make things worse. This course covers the fire triangle, the different classes of fire, how each extinguisher type works, and the correct technique and decision-making for a safe response.",
     instructor: "CCDC HSE Department",
