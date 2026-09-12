@@ -241,5 +241,21 @@ registerCourse({
         ]
       },
 
+                          {
+        title: "Checklist",
+        lessons: [
+          {
+            title: "CCDC LOTO Checklist",
+            type: "document",
+            duration: "2 min",
+            video: " ",
+            slidesPdf: "",
+            pdfDoc:"documents/Lock out Tag out operation Check list.pdf",
+            content: ``
+          },
+           
+        ]
+      },
+
     ]
   });
