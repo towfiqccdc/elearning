@@ -12,6 +12,7 @@ registerCourse({
     title: "Hazard Identification & Risk Assessment",
     category: "Hazard& Risk",
     level: "Beginner",
+    locked:true,
     icon: "bi-exclamation-triangle",
     summary: "Learn how to identify workplace hazards, assess risks, and apply effective control measures using the HIRA process.",
     description: "This course introduces the fundamental principles of Hazard Identification and Risk Assessment (HIRA). Employees will learn how to recognize hazards, understand the difference between hazards and risks, assess likelihood and severity, use a 5×5 risk matrix, determine risk levels, and apply the hierarchy of controls to reduce workplace risks. The course also covers job safety analysis, control measures, residual risk, and practical HIRA requirements for safe work activities.",
