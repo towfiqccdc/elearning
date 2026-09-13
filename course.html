@@ -99,7 +99,9 @@
     let activeFullscreenChangeHandler = null; // same idea, for the fullscreenchange listener
     let pdfjsLibPromise = null; // caches the dynamically-imported PDF.js module
 
-    if (!course) {
+    if (course && course.locked) {
+  window.location.replace('index.html');
+} else if (!course) {
       document.querySelector('.container.course-body').innerHTML =
         '<p style="padding: 40px 0;">Course not found. <a href="courses.html">Back to all courses</a>.</p>';
       document.getElementById('course-hero-section').style.display = 'none';
