@@ -68,6 +68,7 @@ const COURSE_FILES = [
   "hira",
   "forklift",
   "loto",
+  "accident_investigation"
 ];
 
 // ---- Loading machinery — no need to edit below this line ----
