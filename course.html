@@ -236,7 +236,7 @@
           const embedUrl = toEmbeddableVideoUrl(lesson.video.trim());
           return `<div class="lesson-video-placeholder">${
             isDirectFile
-              ? `<video src="${embedUrl}" controls></video>`
+              ? `<video src="${embedUrl}" controls controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false;"></video>`
               : `<iframe src="${embedUrl}" allowfullscreen></iframe>`
           }</div>`;
         }
