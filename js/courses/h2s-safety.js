@@ -18,8 +18,8 @@ registerCourse({
     description: "This course provides essential knowledge about Hydrogen Sulfide (H₂S), including its properties, health hazards, detection, alarm response, personal protective equipment, emergency procedures, and safe work practices in areas where H₂S may be present.",
     instructor: "CCDC HSE Department",
     duration: "30 min",
-    thumbImage: "images/courses/h2s.png",
-    previewImage: "images/courses-wide/h2s.png",
+    thumbImage: "images/courses/h2s.jpg",
+    previewImage: "images/courses-wide/h2s.jpg",
     modules: [
       {
         title: "introduction to hydrogen sulfide safety in oil and gas extraction",
