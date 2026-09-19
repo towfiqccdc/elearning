@@ -18,8 +18,8 @@ registerCourse({
     description: "This course introduces the fundamental principles of Hazard Identification and Risk Assessment (HIRA). Employees will learn how to recognize hazards, understand the difference between hazards and risks, assess likelihood and severity, use a 5×5 risk matrix, determine risk levels, and apply the hierarchy of controls to reduce workplace risks. The course also covers job safety analysis, control measures, residual risk, and practical HIRA requirements for safe work activities.",
     instructor: "CCDC HSE Department",
     duration: "30 min",
-    thumbImage: "images/courses/hira.png",
-    previewImage: "images/courses-wide/hira.png",
+    thumbImage: "images/courses/hira.jpg",
+    previewImage: "images/courses-wide/hira.jpg",
     modules: [
       {
         title: "Hazard Identification & Risk Assessment",
