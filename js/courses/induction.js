@@ -17,6 +17,8 @@ registerCourse({
     description: "This course provides newly joined employees with the essential knowledge required to work safely at CCDC operations. It introduces company HSE policies, workplace rules, personal protective equipment, hazard identification, permit to work requirements, emergency response, fire safety, H₂S awareness, confined space hazards, lifting safety, electrical safety, incident reporting, and stop-work authority.",
     instructor: "CCDC HSE Department",
     duration: "30 min",
+    thumbImage: "images/courses/induction.png",
+    previewImage: "images/courses-wide/induction.png",
     modules: [
       {
         title: "New Employee HSE Induction",
