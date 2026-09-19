@@ -18,6 +18,8 @@ registerCourse({
     description: "Fires on site are rare but fast-moving, and using the wrong extinguisher — or hesitating — can make things worse. This course covers the fire triangle, the different classes of fire, how each extinguisher type works, and the correct technique and decision-making for a safe response.",
     instructor: "CCDC HSE Department",
     duration: "40 min",
+    thumbImage: "images/courses/fire.png",
+    previewImage: "images/courses-wide/fire.png",
     modules: [
       {
         title: "Introduction",
