@@ -18,8 +18,8 @@ registerCourse({
     description: "This course provides essential knowledge and practical safety requirements for safe forklift operation. Employees will learn how to identify common forklift hazards, conduct pre-use inspections, understand forklift stability and load capacity, safely pick up and transport loads, maintain proper visibility, follow site traffic rules, and operate safely around pedestrians. The course also covers safe parking, battery and fuel safety, prohibited practices, emergency response, and the responsibilities of forklift operators.",
     instructor: "CCDC HSE Department",
     duration: "30 min",
-    thumbImage: "images/courses/forklift.png",
-    previewImage: "images/courses-wide/forklift.png",
+    thumbImage: "images/courses/forklift.jpg",
+    previewImage: "images/courses-wide/forklift.jpg",
     modules: [
       {
         title: "Forklift Operational Safety",
