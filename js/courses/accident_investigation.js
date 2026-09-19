@@ -17,8 +17,8 @@ registerCourse({
     description: "This course introduces the fundamental principles of effective workplace accident investigation. Employees will learn how to respond to accidents, secure the incident scene, collect and preserve evidence, interview witnesses, document facts, identify immediate and underlying causes, determine root causes, and develop effective corrective and preventive actions. The course also covers accident investigation techniques, investigation team responsibilities, root cause analysis, accident reporting, and practical requirements for preventing similar incidents from happening again.",
     instructor: "CCDC HSE Department",
     duration: "30 min",
-    thumbImage: "images/courses/investigation.png",
-    previewImage: "images/courses-wide/investigation.png",
+    thumbImage: "images/courses/investigation.jpg",
+    previewImage: "images/courses-wide/investigation.jpg",
     modules: [
       {
         title: "The Basics",
