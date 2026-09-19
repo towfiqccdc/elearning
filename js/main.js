@@ -79,8 +79,8 @@ function courseCardHTML(course) {
   const href = course.locked ? '' : ` href="course.html?c=${course.slug}"`;
   return `
     <${tag}${href} class="course-card${course.locked ? ' locked' : ''}">
-      <div class="thumb">
-        <i class="bi ${course.icon}"></i>
+        <div class="thumb" ${course.thumbImage ? `style="background-image:url('${course.thumbImage}')"` : ''}>
+        ${course.thumbImage ? '' : `<i class="bi ${course.icon}"></i>`}
         <span class="level-tag">${course.level}</span>
         ${course.locked ? '<div class="lock-overlay"><i class="bi bi-lock-fill"></i></div>' : ''}
       </div>
