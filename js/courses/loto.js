@@ -17,6 +17,8 @@ registerCourse({
     description: "This course introduces the fundamental principles of Lockout/Tagout (LOTO) for controlling hazardous energy during maintenance, inspection, repair, and servicing activities. Employees will learn how to identify hazardous energy sources, understand the difference between isolation and shutdown, follow the LOTO procedure, properly apply locks and tags, verify zero energy, and safely restore equipment to service. The course also covers electrical, mechanical, hydraulic, pneumatic, pressure, thermal, and other forms of hazardous energy, as well as authorized and affected employees, group LOTO, and practical LOTO requirements for safe work activities.",
     instructor: "CCDC HSE Department",
     duration: "30 min",
+    thumbImage: "images/courses/loto.jpg",
+    previewImage: "images/courses-wide/loto.png",
     modules: [
       {
         title: "Lockout/Tagout (LOTO)",
