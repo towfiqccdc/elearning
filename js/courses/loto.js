@@ -40,6 +40,15 @@ registerCourse({
             slidesPdf: "slides/loto/LOTO type.pdf",
             content: ``
           },
+
+                   {
+            title: "Importance of Lock Out Tag Out",
+            type: "video",
+            duration: "5 min",
+            video: "videos/loto/loto_importance.mp4",
+            slidesPdf: "",
+            content: ``
+          },
            
         ]
       },
