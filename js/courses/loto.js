@@ -18,7 +18,7 @@ registerCourse({
     instructor: "CCDC HSE Department",
     duration: "30 min",
     thumbImage: "images/courses/loto.jpg",
-    previewImage: "images/courses-wide/loto.png",
+    previewImage: "images/courses-wide/loto.jpg",
     modules: [
       {
         title: "Lockout/Tagout (LOTO)",
