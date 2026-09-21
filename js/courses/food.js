@@ -28,7 +28,7 @@ registerCourse({
             type: "slides",
             duration: "20 min",
             video: "",
-            slidesPdf: "slides/food/food-EN.pdf",
+            slidesPdf: "slides/food/food-Eng.pdf",
             content: ``
           },
 
