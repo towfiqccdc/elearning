@@ -70,6 +70,7 @@ const COURSE_FILES = [
   "loto",
   "accident_investigation",
   "food",
+  "chemical_safety",
 ];
 
 // ---- Loading machinery — no need to edit below this line ----
