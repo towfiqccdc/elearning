@@ -78,7 +78,7 @@ registerCourse({
             title: "Load Center",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/96Q1c57pyXE?si=FUXcng8F81i02rgF",
+            video: "videos/forklift/Load Center.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -86,7 +86,7 @@ registerCourse({
             title: "Stability Triangle 3D",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/FmHMeVTeaF4?si=fzc2T92Vw81v1U7x",
+            video: "videos/forklift/Stability Triangle.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -94,7 +94,7 @@ registerCourse({
             title: "Stability Triangle Explained",
             type: "video",
             duration: "7 min",
-            video: "https://youtu.be/xTZGliMfoRk?si=unXRZP1hZBN7vaqb",
+            video: "videos/forklift/Forklift Stability Triangle Explained.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -117,7 +117,7 @@ registerCourse({
             title: "Forklift Reversing on Slope",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/8DtVnzrHiUY?si=vpm49tAY1FpKfQ6u",
+            video: "videos/forklift/forklift reversing on slope.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -133,7 +133,7 @@ registerCourse({
             title: " How to carry out a Pre-Use Check",
             type: "video",
             duration: "5 min",
-            video: "https://youtu.be/_zCY6mq8RWw?si=YKRjTcpadQO70bYX",
+            video: "videos/forklift/Forklift Operation_ How to carry out a Pre-Use Check.mp4",
             slidesPdf: "",
             content: ``
           },
