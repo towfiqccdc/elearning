@@ -381,7 +381,7 @@ registerCourse({
             title: "What Happens During Annual Fire Extinguisher Service",
             type: "video",
             duration: "10 min",
-            video: "https://youtu.be/1gOgpvyz0zc?si=Hb3nXHu8sk7FreaL",
+            video: "videos/fire_extinguisher/annual inspection.mp4",
             slides: "",
             content: ``
           },
@@ -389,7 +389,7 @@ registerCourse({
             title: "6 Year Fire Extinguisher Maintenance",
             type: "video",
             duration: "10 min",
-            video: "https://youtu.be/LUGTHtia-4I?si=kUPxsPRla0hqtcvK",
+            video: "videos/fire_extinguisher/6 year maintanance.mp4",
             slides: "",
             content: ``
           },
