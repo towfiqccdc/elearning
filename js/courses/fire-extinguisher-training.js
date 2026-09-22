@@ -360,7 +360,7 @@ registerCourse({
             title: "How To Use Fire Extinguisher",
             type: "video",
             duration: "10 min",
-            video: "https://youtu.be/GVBamXXVD30?si=hCHBdjwS8xYvgTMB",
+            video: "videos/fire_extinguisher/PASS.mp4",
             slides: "",
             content: ``
           }
@@ -373,7 +373,7 @@ registerCourse({
             title: "How To Inspect Fire Extinguisher",
             type: "video",
             duration: "9 min",
-            video: "https://youtu.be/cnM8qO9naM4?si=Ue2BRoEhiOlWTwC0",
+            video: "videos/fire_extinguisher/inspection.mp4",
             slidesPdf: "",
             content: ``
           },
