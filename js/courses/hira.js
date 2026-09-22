@@ -44,7 +44,7 @@ registerCourse({
             title: "Hazard Vs Risk",
             type: "video",
             duration: "5 min",
-            video: "https://youtu.be/gFE0uj1V59A?si=jeEEo-IBFXCooQHi",
+            video: "videos/hire/Hazard vs. Risk.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -53,7 +53,7 @@ registerCourse({
             title: "Classification of Hazard",
             type: "video",
             duration: "5 min",
-            video: "https://youtu.be/vpbY50AST2Y?si=8rPGG1bV9HPnco-m",
+            video: "videos/hire/Types of Hazards.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -67,7 +67,7 @@ registerCourse({
             title: "What Is Risk Assessment",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/xnVomQcRux8?si=MoNu8jUNCnYmUW5Y",
+            video: "videos/hire/Risk Assessment.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -75,7 +75,7 @@ registerCourse({
             title: "Steps of Risk Assessment",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/KJoOUNfk-ec?si=6xL0JoAr3gL2uW6r",
+            video: "videos/hire/Steps of Risk Assessment.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -90,7 +90,7 @@ registerCourse({
             title: "Hierarchy of Controls",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/O8e0_RzDxQU?si=AvlUlZLFUkex5VAL",
+            video: "videos/hire/Hierarchy of Controls.mp4",
             slidesPdf: "",
             content: ``
           },
@@ -98,7 +98,7 @@ registerCourse({
             title: "Hierarchy of Controls With Example",
             type: "video",
             duration: "2 min",
-            video: "https://youtu.be/dnXDTaYqagM?si=wMEWXgygSPBkUgR-",
+            video: "videos/hire/The 5 Levels of the Hierarchy of Controls.mp4",
             slidesPdf: "",
             content: ``
           },
