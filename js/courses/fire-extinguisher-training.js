@@ -338,8 +338,8 @@ registerCourse({
           {
             title: "Fire Triangle",
             type: "video",
-            duration: "8 min",
-            video: "https://youtu.be/q3wjPro_rUU?si=jCQYMdy9bnhSurg2",
+            duration: "5 min",
+            video: "videos/fire_extinguisher/Fire Triangle.mp4",
             slidesPdf: "",
             content: `<p>The fire triangle illustrates that combustion requires three essential elements—heat, fuel, and oxygen—and removing any one of them can stop or prevent a fire.</p>`
           }
