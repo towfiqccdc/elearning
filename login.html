@@ -180,8 +180,6 @@
     <main class="form-panel">
       <div class="form-wrap">
 
-
-
         <h1 id="title">Sign in</h1>
         <p class="sub" id="subtitle"></p>
 
@@ -309,7 +307,8 @@
     var switchTextEl = document.getElementById("switch-text");
     var switchBtnEl = document.getElementById("switch-btn");
 
-    document.getElementById("host").textContent = location.host || "this site";
+    var hostEl = document.getElementById("host");
+    if (hostEl) hostEl.textContent = location.host || "this site";
     document.getElementById("year").textContent = new Date().getFullYear();
 
     function showMessage(text, type) {
